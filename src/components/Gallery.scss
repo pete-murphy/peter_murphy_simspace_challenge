@@ -1,0 +1,26 @@
+.gallery-container {
+  // background: var(--red);
+  ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 10rem);
+    margin: none;
+    padding: none;
+    gap: 1rem;
+    li {
+      figure {
+        position: relative;
+        display: contents;
+        .loading {
+          position: absolute;
+        }
+        img {
+          object-fit: cover;
+          height: 100%;
+          width: 100%;
+          border-radius: var(--border-radius);
+        }
+      }
+    }
+  }
+}

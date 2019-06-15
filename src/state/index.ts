@@ -85,7 +85,7 @@ export const setImages = (images: FetchedImages): SetImagesAction => ({
 export const fetchImages = (breed: Breed) =>
   fetch(`https://dog.ceo/api/breed/${breed}/images`)
     .then(res => res.json())
-    .then(({ message }) => Object.keys(message))
+    .then(({ message }) => message)
     .then(images => some(right(images)))
     .catch(_ => some(left("Something went wrong!")));
 

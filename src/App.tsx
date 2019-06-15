@@ -2,8 +2,7 @@ import React, {
   FunctionComponent,
   useEffect,
   useReducer,
-  ChangeEventHandler,
-  MouseEventHandler
+  ChangeEventHandler
 } from "react";
 import "./App.scss";
 import Gallery from "./components/Gallery";
@@ -14,44 +13,50 @@ import {
   reducer,
   initialState,
   setBreeds,
-  FetchedBreeds,
   setQuery,
   fetchImages,
-  Breed
+  Breed,
+  setSelectedBreed,
+  setImages
 } from "./state";
+import { some } from "fp-ts/lib/Option";
 
 const App: FunctionComponent = () => {
-  const [{ breeds, images, query, selectedBreed }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
-  const onQueryChange: ChangeEventHandler<HTMLInputElement> = e => {
-    dispatch(setQuery(e.target.value));
-  };
-  const handleSelectBreed = (breed: Breed): MouseEventHandler => e => {};
-
   useEffect(() => {
     fetchBreeds().then((breeds: any) => dispatch(setBreeds(breeds)));
   }, []);
 
+  const [{ breeds, images, query, selectedBreed }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+
+  const onQueryChange: ChangeEventHandler<HTMLInputElement> = e => {
+    dispatch(setQuery(e.target.value));
+  };
+
+  const handleSelectBreed = (breed: Breed): ChangeEventHandler => _e => {
+    dispatch(setSelectedBreed(some(breed)));
+    fetchImages(breed).then((images: any) => dispatch(setImages(images)));
+  };
+
   return (
     <div className="App">
-      <header>
-        <h1>Dogs!</h1>
-        <Search query={query} onQueryChange={onQueryChange} />
-      </header>
-      <main>
+      <div className="container header-container">
+        <header>
+          <h1>Dogs!</h1>
+          <Search query={query} onQueryChange={onQueryChange} />
+        </header>
+      </div>
+      <main className="container">
         <NavGrid
+          selectedBreed={selectedBreed}
           breeds={breeds}
           query={query}
-          handleClick={handleSelectBreed}
+          handleSelect={handleSelectBreed}
         />
         <Gallery breed={selectedBreed} images={images} />
       </main>
-
-      <pre>
-        {JSON.stringify({ breeds, images, query, selectedBreed }, null, 2)}
-      </pre>
     </div>
   );
 };

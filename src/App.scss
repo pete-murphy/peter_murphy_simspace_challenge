@@ -1,8 +1,25 @@
 .App {
-  header {
-    display: flex;
-    flex-direction: row;
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+  .header-container {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #fffffff9;
   }
 
+  header {
+    h1 {
+      font-weight: 900;
+      letter-spacing: -0.075ch;
+      font-size: 3.2rem;
+      color: var(--blue);
+    }
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
 }
 

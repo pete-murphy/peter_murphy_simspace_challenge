@@ -1,0 +1,38 @@
+.nav-container {
+  .loading {
+    display: flex;
+    justify-content: center;
+    color: var(--gray);
+  }
+  margin: 1rem 0;
+  ul {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1rem;
+    li {
+      display: contents;
+      label { 
+        padding: 0.5rem;
+        border: 1px solid var(--lightgray);
+        border-radius: var(--border-radius);
+        &:hover {
+          border-color: var(--blue);
+          color: var(--blue);
+        }
+      }
+      input {
+        position: absolute;
+        opacity: 0;
+        z-index: -1;
+        width: 1px;
+        height: 1px;
+        &:checked ~ label {
+          background-color: var(--blue);
+          border-color: var(--blue);
+          color: var(--white);
+        }
+      }
+    }
+  }
+}

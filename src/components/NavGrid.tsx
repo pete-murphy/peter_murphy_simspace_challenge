@@ -1,33 +1,59 @@
-import React, { MouseEventHandler } from "react";
-import { FetchedBreeds, Query, Breed, ErrorMsg } from "./../state";
+import React, { ChangeEventHandler } from "react";
+import {
+  FetchedBreeds,
+  Query,
+  Breed,
+  ErrorMsg,
+  SelectedBreed
+} from "./../state";
 import { Either } from "fp-ts/lib/Either";
 import { toRegExp } from "../lib";
+import "./NavGrid.scss";
+
+type HandleBreedSelect = (breed: Breed) => ChangeEventHandler;
 
 export interface NavGridProps {
   breeds: FetchedBreeds;
   query: Query;
-  handleClick: (breed: Breed) => MouseEventHandler;
+  handleSelect: HandleBreedSelect;
+  selectedBreed: SelectedBreed;
 }
 
-const onLoading = <h2>Loading...</h2>;
+const onLoading = <h2 className="loading">Loading...</h2>;
 
 const onSome = (
   query: Query,
-  handleClick: (breed: Breed) => MouseEventHandler
+  handleSelect: HandleBreedSelect,
+  selectedBreed: SelectedBreed
 ) => (s: Either<ErrorMsg, Array<Breed>>) =>
   s.fold(
     msg => <h2>{msg}</h2>,
-    (breeds, visBreeds = breeds.filter(b => toRegExp(query).test(b))) => (
+    (breeds, seenBreeds = breeds.filter(b => toRegExp(query).test(b))) => (
       <ul>
-        {visBreeds.slice(0, 12).map((breed: Breed) => (
+        {seenBreeds.slice(0, 12).map((breed: Breed) => (
           <li key={breed}>
-            <button onClick={handleClick(breed)}>{breed}</button>
+            <input
+              type="radio"
+              onChange={handleSelect(breed)}
+              checked={breed === selectedBreed.getOrElse("")}
+              id={breed}
+            />
+            <label htmlFor={breed}>{breed}</label>
           </li>
         ))}
       </ul>
     )
   );
 
-export default function NavGrid({ breeds, query, handleClick }: NavGridProps) {
-  return <nav>{breeds.fold(onLoading, onSome(query, handleClick))}</nav>;
+export default function NavGrid({
+  breeds,
+  query,
+  handleSelect,
+  selectedBreed
+}: NavGridProps) {
+  return (
+    <nav className="nav-container">
+      {breeds.fold(onLoading, onSome(query, handleSelect, selectedBreed))}
+    </nav>
+  );
 }
