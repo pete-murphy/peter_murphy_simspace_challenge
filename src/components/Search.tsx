@@ -11,13 +11,19 @@ export default function Search({ query, onQueryChange }: SearchProps) {
   return (
     <span className="search-container">
       <input
+        aria-label="search"
         value={query}
         onChange={onQueryChange}
         className="search-input"
         type="text"
       />
       {query.length === 0 && (
-        <span className="search-placeholder">🕵️‍♀️ Search</span>
+        <span className="search-placeholder">
+          <span role="img" aria-label="detective">
+            🕵️‍♀️
+          </span>{" "}
+          Search
+        </span>
       )}
     </span>
   );
