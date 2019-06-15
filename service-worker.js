@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/peter_murphy_simspace_challenge/precache-manifest.91a05fe01194c5d4d15b41686d444183.js"
+  "/peter_murphy_simspace_challenge/precache-manifest.33663cffc4f8460c4e696a29aa5d70f4.js"
 );
 
 self.addEventListener('message', (event) => {
