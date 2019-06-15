@@ -1,5 +1,11 @@
-import React from "react"
+import React, { ChangeEventHandler } from "react";
+import { Query } from "../state";
 
-export default function Search() {
-  return <input type="text" value="Foo" />
+export interface SearchProps {
+  query: Query;
+  onQueryChange: ChangeEventHandler;
+}
+
+export default function Search({ query, onQueryChange }: SearchProps) {
+  return <input type="text" value={query} onChange={onQueryChange} />;
 }
