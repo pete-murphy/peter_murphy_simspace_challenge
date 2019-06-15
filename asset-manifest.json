@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/peter_murphy_simspace_challenge/static/css/main.7921e8c6.chunk.css",
+    "main.js": "/peter_murphy_simspace_challenge/static/js/main.c2a51ebc.chunk.js",
+    "main.js.map": "/peter_murphy_simspace_challenge/static/js/main.c2a51ebc.chunk.js.map",
+    "runtime~main.js": "/peter_murphy_simspace_challenge/static/js/runtime~main.d94be781.js",
+    "runtime~main.js.map": "/peter_murphy_simspace_challenge/static/js/runtime~main.d94be781.js.map",
+    "static/js/2.b08dcba6.chunk.js": "/peter_murphy_simspace_challenge/static/js/2.b08dcba6.chunk.js",
+    "static/js/2.b08dcba6.chunk.js.map": "/peter_murphy_simspace_challenge/static/js/2.b08dcba6.chunk.js.map",
+    "index.html": "/peter_murphy_simspace_challenge/index.html",
+    "precache-manifest.91a05fe01194c5d4d15b41686d444183.js": "/peter_murphy_simspace_challenge/precache-manifest.91a05fe01194c5d4d15b41686d444183.js",
+    "service-worker.js": "/peter_murphy_simspace_challenge/service-worker.js",
+    "static/css/main.7921e8c6.chunk.css.map": "/peter_murphy_simspace_challenge/static/css/main.7921e8c6.chunk.css.map"
+  }
+}
