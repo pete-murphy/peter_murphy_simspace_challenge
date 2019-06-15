@@ -2,7 +2,7 @@
   ul {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 10rem);
+    grid-auto-rows: 10rem;
     margin: none;
     margin-bottom: 2rem;
     padding: none;
