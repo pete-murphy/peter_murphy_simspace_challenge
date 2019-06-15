@@ -2,7 +2,8 @@ import React, {
   FunctionComponent,
   useEffect,
   useReducer,
-  ChangeEventHandler
+  ChangeEventHandler,
+  MouseEventHandler
 } from "react";
 import "./App.scss";
 import Gallery from "./components/Gallery";
@@ -35,15 +36,15 @@ const App: FunctionComponent = () => {
     dispatch(setQuery(e.target.value));
   };
 
-  const handleSelectBreed = (breed: Breed): ChangeEventHandler => _e => {
+  const handleSelectBreed = (breed: Breed): MouseEventHandler => _e => {
     dispatch(setSelectedBreed(some(breed)));
     fetchImages(breed).then((images: any) => dispatch(setImages(images)));
   };
 
   return (
     <div className="App">
-      <div className="container header-container">
-        <header>
+      <div className="header-wrapper">
+        <header className="container">
           <h1>Dogs!</h1>
           <Search query={query} onQueryChange={onQueryChange} />
         </header>

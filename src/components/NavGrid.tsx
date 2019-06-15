@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from "react";
+import React, { MouseEventHandler } from "react";
 import {
   FetchedBreeds,
   Query,
@@ -10,7 +10,7 @@ import { Either } from "fp-ts/lib/Either";
 import { toRegExp } from "../lib";
 import "./NavGrid.scss";
 
-type HandleBreedSelect = (breed: Breed) => ChangeEventHandler;
+type HandleBreedSelect = (breed: Breed) => MouseEventHandler;
 
 export interface NavGridProps {
   breeds: FetchedBreeds;
@@ -27,22 +27,30 @@ const onSome = (
   selectedBreed: SelectedBreed
 ) => (s: Either<ErrorMsg, Array<Breed>>) =>
   s.fold(
-    msg => <h2>{msg}</h2>,
-    (breeds, seenBreeds = breeds.filter(b => toRegExp(query).test(b))) => (
-      <ul>
-        {seenBreeds.slice(0, 12).map((breed: Breed) => (
-          <li key={breed}>
-            <input
-              type="radio"
-              onChange={handleSelect(breed)}
-              checked={breed === selectedBreed.getOrElse("")}
-              id={breed}
-            />
-            <label htmlFor={breed}>{breed}</label>
-          </li>
-        ))}
-      </ul>
-    )
+    msg => <h3 className="error">{msg}</h3>,
+    (breeds, filteredBreeds = breeds.filter(b => toRegExp(query).test(b))) =>
+      filteredBreeds.length ? (
+        <ul>
+          {filteredBreeds.slice(0, 12).map((breed: Breed) => {
+            const selected = breed === selectedBreed.getOrElse("");
+            return (
+              <li key={breed}>
+                <button
+                  type="button"
+                  onClick={handleSelect(breed)}
+                  aria-pressed={selected}
+                  className={selected ? "active" : ""}
+                  id={breed}
+                >
+                  {breed}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <h2 className="no-match">No breed matches found.</h2>
+      )
   );
 
 export default function NavGrid({
