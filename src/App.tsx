@@ -1,22 +1,22 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState, useReducer } from 'react';
 import './App.scss';
+import Gallery from "./components/Gallery"
+import Search from "./components/Search"
 
 const App: FunctionComponent = () => {
+  const [query, setQuery] = useState("")
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header>
+        <h1>Dogs!</h1>
+        <Search />
       </header>
+      <main>
+        <nav>
+
+        </nav>
+        <Gallery images={[]} />
+      </main>
     </div>
   );
 }
