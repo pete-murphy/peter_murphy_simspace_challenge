@@ -56,8 +56,11 @@ type AppAction =
 export const fetchBreeds = () =>
   fetch("https://dog.ceo/api/breeds/list/all")
     .then(res => res.json())
-    .then(({ message }) => Object.keys(message))
-    .then(breeds => some(right(breeds)))
+    .then(({ message }) =>
+      typeof message === "object"
+        ? some(right(Object.keys(message)))
+        : some(left("Failed to fetch dog breeds!"))
+    )
     .catch(_ => some(left("Something went wrong!")));
 
 export const setBreeds = (breeds: FetchedBreeds): SetBreedsAction => ({
@@ -85,8 +88,11 @@ export const setImages = (images: FetchedImages): SetImagesAction => ({
 export const fetchImages = (breed: Breed) =>
   fetch(`https://dog.ceo/api/breed/${breed}/images`)
     .then(res => res.json())
-    .then(({ message }) => message)
-    .then(images => some(right(images)))
+    .then(({ message }) =>
+      Array.isArray(message)
+        ? some(right(message))
+        : some(left("Failed to fetch images!"))
+    )
     .catch(_ => some(left("Something went wrong!")));
 
 export interface AppState {
