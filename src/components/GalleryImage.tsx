@@ -14,11 +14,17 @@ export default function GalleryImage({ imageURI, breed }: GalleryImageProps) {
   const [loaded, setLoaded] = useState(false);
   return (
     <figure key={imageURI}>
-      {!loaded && <h3 className="loading">Loadingsdijfdsf!!!</h3>}
+      {!loaded && (
+        <div className="loading">
+          <span role="img" aria-label="loading">
+            🐶
+          </span>
+        </div>
+      )}
       <img
         style={{
           ...setOpacity(loaded),
-          transition: "1500ms"
+          transition: "800ms"
         }}
         onLoad={_e => setLoaded(true)}
         alt={breed.getOrElse("")}
