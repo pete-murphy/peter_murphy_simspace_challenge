@@ -35,3 +35,5 @@ Deployed here: https://ptrfrncsmrph.github.io/peter_murphy_simspace_challenge/
 - **Testing:** I manually tested the few edge cases I could think of (failed network connection, breaking changes in Dog API) which is possible given the current scale of the app, but if it were to grow this could use a test suite.
 
 - **State management:** For simplicity I'm just using React's `useReducer` in a Redux-style but it would be nice to replace this with Redux to take advantage of its familiarity and existing tooling (browser DevTools, middleware).
+
+- **Pagination:** I misread part of the challenge specification 🙈 and was operating under the mistaken assumption that the requirement was to show the first 12 images only. If I were to do it again, I would add pagination to only load a page at a time, lazy-load on scroll.
