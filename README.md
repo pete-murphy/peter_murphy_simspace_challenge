@@ -1,44 +1,35 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Dogs!
 
-## Available Scripts
+### Tools used (aside from TypeScript and React)
 
-In the project directory, you can run:
+- **Sass:** Create React App ships with Sass support as of the 2.0 release, and I've found hot-reloading (without resetting app state) ideal for rapidly iterating on design. 
 
-### `npm start`
+- **`fp-ts`:** Used this mostly to practice and get familiar with it, so still working out best practices, but I like encapsulating a "possibly loaded" state as
+```typescript
+interface AppState {
+  breeds: Option<Either<ErrorMsg, Breed[]>>;
+  ...
+}
+```
+for example, instead of
+```typescript
+interface AppState {
+  breeds: Breed[];
+  fetchingBreeds: boolean;
+  errorMessage: string;
+  ...
+}
+```
+as it explicitly makes certain combinations of state impossible.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **`lodash`:** I pulled in `lodash` and ended up only using one function 😅. That's OK though because I'm only importing that one function so the impact on bundle size is minimal.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### Future considerations
 
-### `npm test`
+- **Browser support:** I'm using the `fetch` API for AJAX requests because it's a simple browser built-in. I'm also using CSS `grid` because it makes grid-based layouts very easy to implement. Browser support for both those features isn't universal though, so it might be a good idea to either polyfill `fetch` or use a library like `axios`, as well as implement a fallback layout for browsers without `grid` support.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Accessibility optimization:** I think the `NavGrid` component falls under the WAI-ARIA "Grid" widget specification, so it would be nice to support the functionality outlined in the spec (with arrow-key navigation at least). I couldn't find a ready-made solution in React and didn't want to make things _less_ accessible by trying to roll my own.
 
-### `npm run build`
+- **Testing:** I manually tested the few edge cases I could think of (failed network connection, breaking changes in Dog API) which is possible given the current scale of the app, but if it were to grow this could use a test suite.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **State management:** For simplicity I'm just using React's `useReducer` in a Redux-style but it would be nice to replace this with Redux to take advantage of its familiarity and existing tooling (browser DevTools, middleware).
