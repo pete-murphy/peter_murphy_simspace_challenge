@@ -1,5 +1,4 @@
 .gallery-container {
-  // background: var(--red);
   ul {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -10,9 +9,23 @@
     li {
       figure {
         position: relative;
-        display: contents;
+        display: grid;
+        width: 100%;
+        margin: 0;
+        height: 100%;
+        > * {
+          grid-row-start: 1;
+          grid-column-start: 1;
+        }
         .loading {
-          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          span {
+            font-size: 5rem;
+            animation: spin 800ms linear infinite;
+          }
         }
         img {
           object-fit: cover;
@@ -22,5 +35,14 @@
         }
       }
     }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(360deg);
   }
 }

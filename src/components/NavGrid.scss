@@ -1,10 +1,17 @@
 .nav-container {
+  min-height: 12rem;
+  margin: 1rem 0;
   .loading {
     display: flex;
     justify-content: center;
     color: var(--gray);
   }
-  margin: 1rem 0;
+  .no-match {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    color: var(--gray);
+  }
   ul {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -12,25 +19,19 @@
     gap: 1rem;
     li {
       display: contents;
-      label { 
+      button {
+        background: none;
+        font-size: 1rem;
+        font-weight: 500;
         padding: 0.5rem;
         border: 1px solid var(--lightgray);
         border-radius: var(--border-radius);
-        &:hover {
-          border-color: var(--blue);
-          color: var(--blue);
-        }
-      }
-      input {
-        position: absolute;
-        opacity: 0;
-        z-index: -1;
-        width: 1px;
-        height: 1px;
-        &:checked ~ label {
-          background-color: var(--blue);
-          border-color: var(--blue);
-          color: var(--white);
+        &.active {
+          --gradient: linear-gradient(to left, var(--blue), var(--purple));
+          background: var(--gradient);
+          border-color: transparent;
+          outline: none;
+          color: var(--white); 
         }
       }
     }
