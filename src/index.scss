@@ -5,12 +5,23 @@
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   --max-width: 50rem;
-  --blue: dodgerblue;
+  --lightblue-25: rgba(30, 143, 255, 0.25);
+  --lightblue: dodgerblue;
+  --purple: rgb(137, 0, 179);
+  --blue: rgb(22, 22, 165);
   --red: tomato;
   --gray: gray;
   --lightgray: lightgray;
   --white: white;
   --border-radius: 4px;
+}
+
+input, button {
+  outline: none;
+  &:hover, &:focus {
+    color: var(--blue);
+    box-shadow: 0 0 0 3px var(--lightblue-25);
+  }
 }
 
 body {
