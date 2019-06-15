@@ -5,22 +5,22 @@
 - **Sass:** Create React App ships with Sass support as of the 2.0 release, and I've found hot-reloading (without resetting app state) ideal for rapidly iterating on design. 
 
 - **`fp-ts`:** Used this mostly to practice and get familiar with it, so still working out best practices, but I like encapsulating a "possibly loaded" state as
-```typescript
-interface AppState {
-  breeds: Option<Either<ErrorMsg, Breed[]>>;
-  ...
-}
-```
-for example, instead of
-```typescript
-interface AppState {
-  breeds: Breed[];
-  fetchingBreeds: boolean;
-  errorMessage: string;
-  ...
-}
-```
-as it explicitly makes certain combinations of state impossible.
+  ```typescript
+  interface AppState {
+    breeds: Option<Either<ErrorMsg, Breed[]>>;
+    ...
+  }
+  ```
+  for example, instead of
+  ```typescript
+  interface AppState {
+    breeds: Breed[];
+    fetchingBreeds: boolean;
+    errorMessage: string;
+    ...
+  }
+  ```
+  as it explicitly makes certain combinations of state impossible.
 
 - **`lodash`:** I pulled in `lodash` and ended up only using one function 😅. That's OK though because I'm only importing that one function so the impact on bundle size is minimal.
 
