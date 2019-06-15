@@ -18,7 +18,7 @@ const onSome = (breed: SelectedBreed) => (
     msg => <h3 className="error">{msg}</h3>,
     images => (
       <ul>
-        {images.slice(0, 12).map(imageURI => (
+        {images.map(imageURI => (
           <li key={imageURI}>
             <GalleryImage imageURI={imageURI} breed={breed} />
           </li>
