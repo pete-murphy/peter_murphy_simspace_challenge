@@ -1,6 +1,9 @@
 import { Reducer } from "react";
 import { Either, right, left } from "fp-ts/lib/Either";
 import { Option, none, some } from "fp-ts/lib/Option";
+import map from "lodash/fp/map"
+import compose from "lodash/fp/compose"
+import sortBy from "lodash/fp/sortBy"
 
 export const SET_SELECTED_BREED = "SET_SELECTED_BREED";
 export const SET_QUERY = "SET_QUERY";
@@ -16,8 +19,13 @@ export type Query = string;
 export type ErrorMsg = string;
 
 export type FetchedBreeds = Option<Either<ErrorMsg, Array<Breed>>>;
-export type FetchedImages = Option<Either<ErrorMsg, Array<ImageURI>>>;
+export type FetchedImages = Option<Either<ErrorMsg, Array<Image>>>;
 export type SelectedBreed = Option<Breed>;
+export interface Image {
+  imageURI: ImageURI;
+  breed: Breed;
+  favorited: boolean;
+}
 
 interface SetSelectedBreedAction {
   type: typeof SET_SELECTED_BREED;
@@ -44,15 +52,6 @@ interface AddFavoriteAction {
   payload: ImageURI;
 }
 
-interface FetchBreedsAction {
-  type: typeof FETCH_BREEDS;
-}
-
-interface FetchImagesAction {
-  type: typeof FETCH_IMAGES;
-  payload: Breed;
-}
-
 export type AppAction =
   | SetBreedsAction
   | SetQueryAction
@@ -68,7 +67,7 @@ export const fetchBreeds = () =>
         ? some(right(Object.keys(message)))
         : some(left("Failed to fetch dog breeds!"))
     )
-    .catch(_ => some(left("Something went wrong!")));
+    .catch(_ => some(left("Something went wrong!"))) as Promise<FetchedBreeds>;
 
 export const setBreeds = (breeds: FetchedBreeds): SetBreedsAction => ({
   type: SET_BREEDS,
@@ -97,13 +96,16 @@ export const fetchImages = (breed: Breed) =>
     .then(res => res.json())
     .then(({ message }) =>
       Array.isArray(message)
-        ? some(right(message))
+        ? some(right(message.map(imageURI => ({
+          breed,
+          favorited: false,
+          imageURI
+        }))))
         : some(left("Failed to fetch images!"))
     )
-    .catch(_ => some(left("Something went wrong!")));
+    .catch(_ => some(left("Something went wrong!"))) as Promise<FetchedImages>;
 
 export interface AppState {
-  favorites: Array<ImageURI>,
   breeds: FetchedBreeds;
   images: FetchedImages;
   query: Query;
@@ -111,7 +113,6 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  favorites: [],
   breeds: none,
   images: none,
   query: "",
@@ -132,7 +133,21 @@ export const reducer: Reducer<AppState, AppAction> = (
     case SET_IMAGES:
       return { ...state, images: action.payload };
     case ADD_FAVORITE:
-      return { ...state, favorites: [...state.favorites, action.payload] }
+      return {
+        ...state,
+        images: state.images.map(
+          e => e.map(
+            compose(
+              sortBy(({ favorited }) => !favorited),
+              map(img =>
+                img.imageURI === action.payload
+                  ? { ...img, favorited: !img.favorited }
+                  : img
+              )
+            )
+          )
+        )
+      }
     default:
       return state;
   }

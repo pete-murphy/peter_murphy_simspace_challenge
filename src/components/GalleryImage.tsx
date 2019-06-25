@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { ImageURI, SelectedBreed } from "../state";
-
-export interface GalleryImageProps {
-  imageURI: ImageURI;
-  breed: SelectedBreed;
-}
+import { Image } from "../state";
 
 const setOpacity = (loaded: boolean) => ({
   opacity: loaded ? 1 : 0
 });
 
-export default function GalleryImage({ imageURI, breed }: GalleryImageProps) {
+export default function GalleryImage({ imageURI, breed, favorited }: Image) {
   const [loaded, setLoaded] = useState(false);
   return (
-    <figure key={imageURI}>
+    <figure key={imageURI}
+      style={{
+        boxShadow: favorited ? "0 0 0 5px var(--red)" : "none"
+      }}>
       {!loaded && (
         <div className="loading">
           <span role="img" aria-label="loading">
@@ -27,7 +25,7 @@ export default function GalleryImage({ imageURI, breed }: GalleryImageProps) {
           transition: "800ms"
         }}
         onLoad={_e => setLoaded(true)}
-        alt={breed.getOrElse("")}
+        alt={breed}
         src={imageURI}
       ></img>
     </figure>

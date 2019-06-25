@@ -1,13 +1,15 @@
-import React, { ChangeEventHandler } from "react";
-import { Query } from "../state";
+import React, { ChangeEventHandler, useContext } from "react";
+import { setQuery } from "../state";
 import "./Search.scss";
+import { AppContext } from "../App";
 
-export interface SearchProps {
-  query: Query;
-  onQueryChange: ChangeEventHandler;
-}
 
-export default function Search({ query, onQueryChange }: SearchProps) {
+export default function Search(): JSX.Element {
+  const { dispatch, query } = useContext(AppContext)
+  const onQueryChange: ChangeEventHandler<HTMLInputElement> = e => {
+    dispatch(setQuery(e.target.value));
+  };
+
   return (
     <span className="search-container">
       <input

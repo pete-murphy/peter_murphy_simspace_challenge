@@ -1,9 +1,9 @@
 import React, {
-  FunctionComponent,
+  createContext,
   useEffect,
   useReducer,
-  ChangeEventHandler,
-  MouseEventHandler
+  FunctionComponent,
+  Dispatch
 } from "react";
 import "./App.scss";
 import Gallery from "./components/Gallery";
@@ -14,51 +14,42 @@ import {
   reducer,
   initialState,
   setBreeds,
-  setQuery,
-  fetchImages,
-  Breed,
-  setSelectedBreed,
-  setImages
+  FetchedBreeds,
+  AppState,
+  AppAction
 } from "./state";
-import { some } from "fp-ts/lib/Option";
+
+const initialDispatch: Dispatch<AppAction> = (): void => { }
+interface AppDispatch {
+  dispatch: Dispatch<AppAction>
+}
+export const AppContext = createContext<AppState & AppDispatch>({ ...initialState, dispatch: initialDispatch })
 
 const App: FunctionComponent = () => {
   useEffect(() => {
-    fetchBreeds().then((breeds: any) => dispatch(setBreeds(breeds)));
+    fetchBreeds().then((breeds: FetchedBreeds) => dispatch(setBreeds(breeds)));
   }, []);
 
-  const [{ breeds, images, query, selectedBreed, favorites }, dispatch] = useReducer(
+  const [state, dispatch] = useReducer(
     reducer,
     initialState
   );
 
-  const onQueryChange: ChangeEventHandler<HTMLInputElement> = e => {
-    dispatch(setQuery(e.target.value));
-  };
-
-  const handleSelectBreed = (breed: Breed): MouseEventHandler => _e => {
-    dispatch(setSelectedBreed(some(breed)));
-    fetchImages(breed).then((images: any) => dispatch(setImages(images)));
-  };
-
   return (
-    <div className="App">
-      <div className="header-wrapper">
-        <header className="container">
-          <h1>Dogs!</h1>
-          <Search query={query} onQueryChange={onQueryChange} />
-        </header>
+    <AppContext.Provider value={{ ...state, dispatch }}>
+      <div className="App">
+        <div className="header-wrapper">
+          <header className="container">
+            <h1>Dogs!</h1>
+            <Search />
+          </header>
+        </div>
+        <main className="container">
+          <NavGrid />
+          <Gallery />
+        </main>
       </div>
-      <main className="container">
-        <NavGrid
-          selectedBreed={selectedBreed}
-          breeds={breeds}
-          query={query}
-          handleSelect={handleSelectBreed}
-        />
-        <Gallery breed={selectedBreed} images={images} dispatch={dispatch} favorites={favorites} />
-      </main>
-    </div>
+    </AppContext.Provider>
   );
 };
 

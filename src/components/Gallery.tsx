@@ -1,40 +1,24 @@
-import React, { Dispatch } from "react";
-import { FetchedImages, ImageURI, ErrorMsg, SelectedBreed, AppAction, ADD_FAVORITE } from "../state";
+import React, { useContext } from "react";
+import { Image, ErrorMsg, ADD_FAVORITE } from "../state";
 import { Either } from "fp-ts/lib/Either";
 import GalleryImage from "./GalleryImage";
 import "./Gallery.scss";
-
-export interface GalleryProps {
-  images: FetchedImages;
-  breed: SelectedBreed;
-  dispatch: Dispatch<AppAction>;
-  favorites: Array<ImageURI>;
-}
+import { AppContext } from "../App";
 
 const onNone = null;
 
-const onSome = (breed: SelectedBreed, dispatch: Dispatch<AppAction>, favorites: Array<ImageURI>) => (
-  s: Either<ErrorMsg, Array<ImageURI>>
+const onSome = (
+  s: Either<ErrorMsg, Array<Image>>
 ) =>
   s.fold(
     msg => <h3 className="error">{msg}</h3>,
     images => {
-      const favoritedImages = images.filter(imageURI => favorites.includes(imageURI))
-      const unFavoritedImages = images.filter(imageURI => !favorites.includes(imageURI))
+      const { dispatch } = useContext(AppContext)
       return (
         <ul>
-          {favoritedImages.map((imageURI: ImageURI) => (
-            <li style={{
-              outline: favorites.includes(imageURI) ? "5px solid red" : "none"
-            }} key={imageURI} onClick={_e => { dispatch({ type: ADD_FAVORITE, payload: imageURI }) }}>
-              <GalleryImage imageURI={imageURI} breed={breed} />
-            </li>
-          ))}
-          {unFavoritedImages.map((imageURI: ImageURI) => (
-            <li style={{
-              outline: favorites.includes(imageURI) ? "5px solid red" : "none"
-            }} key={imageURI} onClick={_e => { dispatch({ type: ADD_FAVORITE, payload: imageURI }) }}>
-              <GalleryImage imageURI={imageURI} breed={breed} />
+          {images.map(({ imageURI, breed, favorited }) => (
+            <li key={imageURI} onClick={_e => { dispatch({ type: ADD_FAVORITE, payload: imageURI }) }}>
+              <GalleryImage imageURI={imageURI} breed={breed} favorited={favorited} />
             </li>
           ))}
         </ul>
@@ -42,10 +26,11 @@ const onSome = (breed: SelectedBreed, dispatch: Dispatch<AppAction>, favorites: 
     }
   );
 
-export default function Gallery({ images, breed, dispatch, favorites }: GalleryProps) {
+export default function Gallery() {
+  const { images } = useContext(AppContext)
   return (
     <section className="gallery-container">
-      {images.fold(onNone, onSome(breed, dispatch, favorites))}
+      {images.fold(onNone, onSome)}
     </section>
   );
 }
