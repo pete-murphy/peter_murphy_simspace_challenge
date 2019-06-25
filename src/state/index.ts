@@ -8,6 +8,7 @@ export const FETCH_BREEDS = "FETCH_BREEDS";
 export const FETCH_IMAGES = "FETCH_IMAGES";
 export const SET_BREEDS = "SET_BREEDS";
 export const SET_IMAGES = "SET_IMAGES";
+export const ADD_FAVORITE = "ADD_FAVORITE";
 
 export type Breed = string;
 export type ImageURI = string;
@@ -38,6 +39,11 @@ interface SetQueryAction {
   payload: Query;
 }
 
+interface AddFavoriteAction {
+  type: typeof ADD_FAVORITE;
+  payload: ImageURI;
+}
+
 interface FetchBreedsAction {
   type: typeof FETCH_BREEDS;
 }
@@ -47,11 +53,12 @@ interface FetchImagesAction {
   payload: Breed;
 }
 
-type AppAction =
+export type AppAction =
   | SetBreedsAction
   | SetQueryAction
   | SetSelectedBreedAction
-  | SetImagesAction;
+  | SetImagesAction
+  | AddFavoriteAction;
 
 export const fetchBreeds = () =>
   fetch("https://dog.ceo/api/breeds/list/all")
@@ -96,6 +103,7 @@ export const fetchImages = (breed: Breed) =>
     .catch(_ => some(left("Something went wrong!")));
 
 export interface AppState {
+  favorites: Array<ImageURI>,
   breeds: FetchedBreeds;
   images: FetchedImages;
   query: Query;
@@ -103,6 +111,7 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
+  favorites: [],
   breeds: none,
   images: none,
   query: "",
@@ -122,6 +131,8 @@ export const reducer: Reducer<AppState, AppAction> = (
       return { ...state, selectedBreed: action.payload };
     case SET_IMAGES:
       return { ...state, images: action.payload };
+    case ADD_FAVORITE:
+      return { ...state, favorites: [...state.favorites, action.payload] }
     default:
       return state;
   }

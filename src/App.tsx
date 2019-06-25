@@ -27,7 +27,7 @@ const App: FunctionComponent = () => {
     fetchBreeds().then((breeds: any) => dispatch(setBreeds(breeds)));
   }, []);
 
-  const [{ breeds, images, query, selectedBreed }, dispatch] = useReducer(
+  const [{ breeds, images, query, selectedBreed, favorites }, dispatch] = useReducer(
     reducer,
     initialState
   );
@@ -56,7 +56,7 @@ const App: FunctionComponent = () => {
           query={query}
           handleSelect={handleSelectBreed}
         />
-        <Gallery breed={selectedBreed} images={images} />
+        <Gallery breed={selectedBreed} images={images} dispatch={dispatch} favorites={favorites} />
       </main>
     </div>
   );
