@@ -1,4 +1,4 @@
-import { Reducer } from "react";
+import { Reducer, Dispatch } from "react";
 import { Either, right, left } from "fp-ts/lib/Either";
 import { Option, none, some } from "fp-ts/lib/Option";
 import map from "lodash/fp/map";
@@ -122,6 +122,11 @@ export const initialState: AppState = {
   query: "",
   selectedBreed: none
 };
+
+export interface AppDispatch {
+  dispatch: Dispatch<AppAction>;
+}
+export type Context = AppState & AppDispatch;
 
 export const reducer: Reducer<AppState, AppAction> = (
   state = initialState,

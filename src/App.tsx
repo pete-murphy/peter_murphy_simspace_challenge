@@ -2,8 +2,7 @@ import React, {
   createContext,
   useEffect,
   useReducer,
-  FunctionComponent,
-  Dispatch
+  FunctionComponent
 } from "react";
 import "./App.scss";
 import Gallery from "./components/Gallery";
@@ -11,29 +10,21 @@ import NavGrid from "./components/NavGrid";
 import Search from "./components/Search";
 import {
   fetchBreeds,
-  reducer,
   initialState,
+  reducer,
   setBreeds,
   FetchedBreeds,
-  AppState,
-  AppAction
+  Context
 } from "./state";
 
-const initialDispatch: Dispatch<AppAction> = (): void => {};
-interface AppDispatch {
-  dispatch: Dispatch<AppAction>;
-}
-export const AppContext = createContext<AppState & AppDispatch>({
-  ...initialState,
-  dispatch: initialDispatch
-});
+export const AppContext = createContext<Context>({} as Context);
 
 const App: FunctionComponent = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     fetchBreeds().then((breeds: FetchedBreeds) => dispatch(setBreeds(breeds)));
   }, []);
-
-  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
     <AppContext.Provider value={{ ...state, dispatch }}>
