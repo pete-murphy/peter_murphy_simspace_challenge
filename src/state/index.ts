@@ -11,7 +11,7 @@ export const FETCH_BREEDS = "FETCH_BREEDS";
 export const FETCH_IMAGES = "FETCH_IMAGES";
 export const SET_BREEDS = "SET_BREEDS";
 export const SET_IMAGES = "SET_IMAGES";
-export const ADD_FAVORITE = "ADD_FAVORITE";
+export const TOGGLE_FAVORITE = "TOGGLE_FAVORITE";
 
 export type Breed = string;
 export type ImageURI = string;
@@ -48,7 +48,7 @@ interface SetQueryAction {
 }
 
 interface AddFavoriteAction {
-  type: typeof ADD_FAVORITE;
+  type: typeof TOGGLE_FAVORITE;
   payload: ImageURI;
 }
 
@@ -136,7 +136,7 @@ export const reducer: Reducer<AppState, AppAction> = (
       return { ...state, selectedBreed: action.payload };
     case SET_IMAGES:
       return { ...state, images: action.payload };
-    case ADD_FAVORITE:
+    case TOGGLE_FAVORITE:
       return {
         ...state,
         images: state.images.map(e =>

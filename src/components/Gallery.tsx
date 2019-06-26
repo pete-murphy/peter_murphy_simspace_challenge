@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Image, ErrorMsg, ADD_FAVORITE } from "../state";
+import { Image, ErrorMsg, TOGGLE_FAVORITE } from "../state";
 import { Either } from "fp-ts/lib/Either";
 import GalleryImage from "./GalleryImage";
 import "./Gallery.scss";
@@ -18,7 +18,7 @@ const onSome = (s: Either<ErrorMsg, Array<Image>>) =>
             <li
               key={imageURI}
               onClick={_e => {
-                dispatch({ type: ADD_FAVORITE, payload: imageURI });
+                dispatch({ type: TOGGLE_FAVORITE, payload: imageURI });
               }}
             >
               <GalleryImage
