@@ -3,9 +3,8 @@ import { setQuery } from "../state";
 import "./Search.scss";
 import { AppContext } from "../App";
 
-
 export default function Search(): JSX.Element {
-  const { dispatch, query } = useContext(AppContext)
+  const { dispatch, query } = useContext(AppContext);
   const onQueryChange: ChangeEventHandler<HTMLInputElement> = e => {
     dispatch(setQuery(e.target.value));
   };

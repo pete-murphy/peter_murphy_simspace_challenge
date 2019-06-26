@@ -19,21 +19,21 @@ import {
   AppAction
 } from "./state";
 
-const initialDispatch: Dispatch<AppAction> = (): void => { }
+const initialDispatch: Dispatch<AppAction> = (): void => {};
 interface AppDispatch {
-  dispatch: Dispatch<AppAction>
+  dispatch: Dispatch<AppAction>;
 }
-export const AppContext = createContext<AppState & AppDispatch>({ ...initialState, dispatch: initialDispatch })
+export const AppContext = createContext<AppState & AppDispatch>({
+  ...initialState,
+  dispatch: initialDispatch
+});
 
 const App: FunctionComponent = () => {
   useEffect(() => {
     fetchBreeds().then((breeds: FetchedBreeds) => dispatch(setBreeds(breeds)));
   }, []);
 
-  const [state, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
     <AppContext.Provider value={{ ...state, dispatch }}>

@@ -1,9 +1,9 @@
 import { Reducer } from "react";
 import { Either, right, left } from "fp-ts/lib/Either";
 import { Option, none, some } from "fp-ts/lib/Option";
-import map from "lodash/fp/map"
-import compose from "lodash/fp/compose"
-import sortBy from "lodash/fp/sortBy"
+import map from "lodash/fp/map";
+import compose from "lodash/fp/compose";
+import sortBy from "lodash/fp/sortBy";
 
 export const SET_SELECTED_BREED = "SET_SELECTED_BREED";
 export const SET_QUERY = "SET_QUERY";
@@ -96,11 +96,15 @@ export const fetchImages = (breed: Breed) =>
     .then(res => res.json())
     .then(({ message }) =>
       Array.isArray(message)
-        ? some(right(message.map(imageURI => ({
-          breed,
-          favorited: false,
-          imageURI
-        }))))
+        ? some(
+            right(
+              message.map(imageURI => ({
+                breed,
+                favorited: false,
+                imageURI
+              }))
+            )
+          )
         : some(left("Failed to fetch images!"))
     )
     .catch(_ => some(left("Something went wrong!"))) as Promise<FetchedImages>;
@@ -135,8 +139,8 @@ export const reducer: Reducer<AppState, AppAction> = (
     case ADD_FAVORITE:
       return {
         ...state,
-        images: state.images.map(
-          e => e.map(
+        images: state.images.map(e =>
+          e.map(
             compose(
               sortBy(({ favorited }) => !favorited),
               map(img =>
@@ -147,7 +151,7 @@ export const reducer: Reducer<AppState, AppAction> = (
             )
           )
         )
-      }
+      };
     default:
       return state;
   }
