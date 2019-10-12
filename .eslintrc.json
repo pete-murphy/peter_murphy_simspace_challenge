@@ -4,11 +4,11 @@
     "prettier"
   ],
   "plugins": [
-    "prettier"
+    "prettier",
+    "@typescript-eslint"
   ],
   "rules": {
-    "prettier/prettier": [
-      "error"
-    ]
-  }
+    "prettier/prettier": "error"
+  },
+  "parser": "@typescript-eslint/parser"
 }

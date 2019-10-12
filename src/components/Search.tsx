@@ -1,7 +1,7 @@
 import React, { ChangeEventHandler, useContext } from "react";
-import { setQuery } from "../state";
+import { AppContext } from "src/App";
+import { setQuery } from "src/state";
 import "./Search.scss";
-import { AppContext } from "../App";
 
 export default function Search(): JSX.Element {
   const { dispatch, query } = useContext(AppContext);

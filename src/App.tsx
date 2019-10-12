@@ -13,7 +13,6 @@ import {
   initialState,
   reducer,
   setBreeds,
-  FetchedBreeds,
   Context
 } from "./state";
 
@@ -23,7 +22,9 @@ const App: FunctionComponent = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    fetchBreeds().then((breeds: FetchedBreeds) => dispatch(setBreeds(breeds)));
+    fetchBreeds().then(breeds => {
+      dispatch(setBreeds(breeds));
+    });
   }, []);
 
   return (

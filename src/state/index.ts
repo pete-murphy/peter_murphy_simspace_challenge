@@ -1,9 +1,8 @@
 import { Reducer, Dispatch } from "react";
-import { Either, right, left } from "fp-ts/lib/Either";
-import { Option, none, some } from "fp-ts/lib/Option";
-import map from "lodash/fp/map";
-import compose from "lodash/fp/compose";
-import sortBy from "lodash/fp/sortBy";
+import { map as mapArray } from "fp-ts/lib/Array";
+import { Either, right, left, map as mapEither } from "fp-ts/lib/Either";
+import { Option, none, some, map as mapOption } from "fp-ts/lib/Option";
+import { contramap, Ord, ordBoolean, getDualOrd } from "fp-ts/lib/Ord";
 
 export const SET_SELECTED_BREED = "SET_SELECTED_BREED";
 export const SET_QUERY = "SET_QUERY";
@@ -18,14 +17,22 @@ export type ImageURI = string;
 export type Query = string;
 export type ErrorMsg = string;
 
-export type FetchedBreeds = Option<Either<ErrorMsg, Array<Breed>>>;
-export type FetchedImages = Option<Either<ErrorMsg, Array<Image>>>;
+export type FetchedBreeds = Either<ErrorMsg, Array<Breed>>;
+export type PendingBreeds = Option<FetchedBreeds>;
+
+export type FetchedImages = Either<ErrorMsg, Array<Image>>;
+export type PendingImages = Option<FetchedImages>;
 export type SelectedBreed = Option<Breed>;
+
 export interface Image {
   imageURI: ImageURI;
   breed: Breed;
   favorited: boolean;
 }
+
+export const ordImage: Ord<Image> = contramap((img: Image) => img.favorited)(
+  getDualOrd(ordBoolean)
+);
 
 interface SetSelectedBreedAction {
   type: typeof SET_SELECTED_BREED;
@@ -34,12 +41,12 @@ interface SetSelectedBreedAction {
 
 interface SetBreedsAction {
   type: typeof SET_BREEDS;
-  payload: FetchedBreeds;
+  payload: PendingBreeds;
 }
 
 interface SetImagesAction {
   type: typeof SET_IMAGES;
-  payload: FetchedImages;
+  payload: PendingImages;
 }
 
 interface SetQueryAction {
@@ -47,7 +54,7 @@ interface SetQueryAction {
   payload: Query;
 }
 
-interface AddFavoriteAction {
+interface ToggleFavoriteAction {
   type: typeof TOGGLE_FAVORITE;
   payload: ImageURI;
 }
@@ -57,7 +64,7 @@ export type AppAction =
   | SetQueryAction
   | SetSelectedBreedAction
   | SetImagesAction
-  | AddFavoriteAction;
+  | ToggleFavoriteAction;
 
 export const fetchBreeds = () =>
   fetch("https://dog.ceo/api/breeds/list/all")
@@ -67,9 +74,9 @@ export const fetchBreeds = () =>
         ? some(right(Object.keys(message)))
         : some(left("Failed to fetch dog breeds!"))
     )
-    .catch(_ => some(left("Something went wrong!"))) as Promise<FetchedBreeds>;
+    .catch(_ => some(left("Something went wrong!"))) as Promise<PendingBreeds>;
 
-export const setBreeds = (breeds: FetchedBreeds): SetBreedsAction => ({
+export const setBreeds = (breeds: PendingBreeds): SetBreedsAction => ({
   type: SET_BREEDS,
   payload: breeds
 });
@@ -86,9 +93,14 @@ export const setSelectedBreed = (
   payload: breed
 });
 
-export const setImages = (images: FetchedImages): SetImagesAction => ({
+export const setImages = (images: PendingImages): SetImagesAction => ({
   type: SET_IMAGES,
   payload: images
+});
+
+export const toggleFavorite = (imageURI: ImageURI): ToggleFavoriteAction => ({
+  type: TOGGLE_FAVORITE,
+  payload: imageURI
 });
 
 export const fetchImages = (breed: Breed) =>
@@ -107,11 +119,11 @@ export const fetchImages = (breed: Breed) =>
           )
         : some(left("Failed to fetch images!"))
     )
-    .catch(_ => some(left("Something went wrong!"))) as Promise<FetchedImages>;
+    .catch(_ => some(left("Something went wrong!"))) as Promise<PendingImages>;
 
 export interface AppState {
-  breeds: FetchedBreeds;
-  images: FetchedImages;
+  breeds: PendingBreeds;
+  images: PendingImages;
   query: Query;
   selectedBreed: SelectedBreed;
 }
@@ -144,18 +156,15 @@ export const reducer: Reducer<AppState, AppAction> = (
     case TOGGLE_FAVORITE:
       return {
         ...state,
-        images: state.images.map(e =>
-          e.map(
-            compose(
-              sortBy(({ favorited }) => !favorited),
-              map(img =>
-                img.imageURI === action.payload
-                  ? { ...img, favorited: !img.favorited }
-                  : img
-              )
+        images: mapOption(
+          mapEither(
+            mapArray((img: Image) =>
+              img.imageURI === action.payload
+                ? { ...img, favorited: !img.favorited }
+                : img
             )
           )
-        )
+        )(state.images)
       };
     default:
       return state;

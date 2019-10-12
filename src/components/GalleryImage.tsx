@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image } from "../state";
+import { Image } from "src/state";
 
 export default function GalleryImage({ imageURI, breed, favorited }: Image) {
   const [loaded, setLoaded] = useState(false);
