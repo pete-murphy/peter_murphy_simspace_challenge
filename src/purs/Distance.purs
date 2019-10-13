@@ -5,24 +5,13 @@ import Control.Monad.ST (ST)
 import Control.Monad.ST as ST
 import Control.Monad.ST.Ref as STRef
 import Data.Array (reverse, sortBy, unsafeIndex)
+import Data.Array as Array
 import Data.Array.ST (STArray)
 import Data.Array.ST as STArray
 import Data.Maybe (Maybe(..))
 import Data.String (length)
 import Data.String.CodeUnits (toCharArray)
 import Partial.Unsafe (unsafePartial)
-
-min' ::
-  Int ->
-  Int ->
-  Int ->
-  Int ->
-  Int ->
-  Int
-min' d0 d1 d2 bx ay
-  | d0 < d1 || d2 < d1 = if d0 > d2 then d2 + 1 else d0 + 1
-  | bx == ay = d1
-  | otherwise = d1 + 1
 
 infixr 5 unsafeIndex as !!!
 
@@ -63,12 +52,12 @@ levenshtein a b
           row <- STArray.empty
           prev <- STRef.new 0
           val <- STRef.new 0
-          ST.for 0 (length a + 1) $ \i -> STArray.push i row
-          ST.for 1 (length b + 1)
+          ST.for 0 (Array.length as + 1) $ \i -> STArray.push i row
+          ST.for 1 (Array.length bs + 1)
             $ \i -> do
                 _ <- STRef.write (i - 1) prev
                 _ <-
-                  ST.for 1 (length a + 1) \j -> do
+                  ST.for 1 (Array.length as + 1) \j -> do
                     prev' <- STRef.read prev
                     _ <-
                       if (bs !!! i - 1 == as !!! j - 1) then do
@@ -82,5 +71,5 @@ levenshtein a b
                     val' <- STRef.read val
                     STRef.write val' prev
                 prev' <- STRef.read prev
-                STArray.modify (length a) (\_ -> prev') row
-          unsafePeek (length a) row
+                STArray.modify (Array.length as) (\_ -> prev') row
+          unsafePeek (Array.length as) row
