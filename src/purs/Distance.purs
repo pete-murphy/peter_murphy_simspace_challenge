@@ -4,14 +4,14 @@ import Prelude
 import Control.Monad.ST (ST)
 import Control.Monad.ST as ST
 import Control.Monad.ST.Ref as STRef
-import Data.Array (unsafeIndex)
+import Data.Array (sortBy, unsafeIndex)
 import Data.Array.ST (STArray)
 import Data.Array.ST as STArray
 import Data.Char (toCharCode)
 import Data.Maybe (Maybe(..))
+import Data.Ord (abs)
 import Data.String (length)
 import Data.String.CodeUnits (toCharArray)
-import Data.Tuple.Nested ((/\))
 import Partial.Unsafe (unsafePartial)
 
 min' ::
@@ -54,10 +54,10 @@ levenshtein ::
 levenshtein a b
   | a == b = 0
   | otherwise =
-    unsafePartial
+    abs $ unsafePartial
       $ ST.run do
           let
-            as /\ bs = toCharArray a /\ toCharArray b
+            [ as, bs ] = toCharArray <$> sortBy (comparing length) [ a, b ]
           la <- STRef.new (length a)
           lb <- STRef.new (length b)
           ST.while do
@@ -95,7 +95,7 @@ levenshtein a b
             ST.for 0 la'
               $ \i -> do
                   _ <- STArray.push (i + 1) v
-                  _ <- STArray.push (toCharCode $ as !!! offset' + i) v
+                  _ <- STArray.push (toCharCode $ as !!! (offset' + i)) v
                   pure unit
             len <- STRef.new (la' * 2 - 1) -- This might fail??
             ST.while do
@@ -104,16 +104,16 @@ levenshtein a b
               $ do
                   x' <- STRef.read x
                   _ <- STRef.modify (pure x') d0
-                  bx0' <- STRef.modify (\_ -> toCharCode $ bs !!! offset' + x') bx0
+                  bx0' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x')) bx0
                   d1' <- STRef.modify (\_ -> x' + 1) d1
-                  bx1' <- STRef.modify (\_ -> toCharCode $ bs !!! offset' + x' + 1) bx1
+                  bx1' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 1)) bx1
                   d2' <- STRef.modify (\_ -> x' + 2) d2
-                  bx2' <- STRef.modify (\_ -> toCharCode $ bs !!! offset' + x' + 1) bx2
+                  bx2' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 1)) bx2
                   d3' <- STRef.modify (\_ -> x' + 3) d3
-                  bx3' <- STRef.modify (\_ -> toCharCode $ bs !!! offset' + x' + 3) bx3
+                  bx3' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 3)) bx3
                   _ <- STRef.modify (_ + 4) x
                   dd' <- STRef.modify (\_ -> x' + 4) dd
-                  pure $ ST.for 0 (la' * 2 - 1 `div` 2)
+                  pure $ ST.for 0 ((la' * 2 - 1) `div` 2)
                     $ \i -> do
                         let
                           z = i * 2
@@ -130,6 +130,7 @@ levenshtein a b
                         _ <- STRef.modify (\_ -> d1'') d2
                         _ <- STRef.modify (\_ -> d0'') d1
                         _ <- STRef.modify (\_ -> dy') d0
+                        _ <- STRef.modify (\_ -> dd'') lb
                         pure unit
             ST.while do
               x' <- STRef.read x
@@ -140,7 +141,7 @@ levenshtein a b
                   bx0' <- STRef.modify (\_ -> d0') bx0
                   x'' <- STRef.modify (_ + 1) x
                   dd' <- STRef.modify (\_ -> x'') dd
-                  pure $ ST.for 0 (la' * 2 - 1 `div` 2)
+                  pure $ ST.for 0 ((la' * 2 - 1) `div` 2)
                     $ \i -> do
                         let
                           z = i * 2
@@ -150,7 +151,8 @@ levenshtein a b
                         dd'' <- STRef.modify (\d -> min' dy' d0' d bx0' z1) dd
                         _ <- STArray.modify z (\_ -> dd'') v
                         _ <- STRef.modify (\_ -> dy') d0
-                        _ <- STRef.modify (\_ -> dd'') lb
                         pure unit
+            dd' <- STRef.read dd
+            _ <- STRef.modify (\_ -> dd') lb
             pure unit
           STRef.read lb
