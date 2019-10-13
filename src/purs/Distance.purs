@@ -103,56 +103,56 @@ levenshtein a b
               pure $ x' < lb' - 3
               $ do
                   x' <- STRef.read x
-                  _ <- STRef.modify (pure x') d0
-                  bx0' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x')) bx0
-                  d1' <- STRef.modify (\_ -> x' + 1) d1
-                  bx1' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 1)) bx1
-                  d2' <- STRef.modify (\_ -> x' + 2) d2
-                  bx2' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 1)) bx2
-                  d3' <- STRef.modify (\_ -> x' + 3) d3
-                  bx3' <- STRef.modify (\_ -> toCharCode $ bs !!! (offset' + x' + 3)) bx3
-                  _ <- STRef.modify (_ + 4) x
-                  dd' <- STRef.modify (\_ -> x' + 4) dd
+                  d0' <- STRef.write x' d0
+                  bx0' <- STRef.write (toCharCode $ bs !!! (offset' + d0')) bx0
+                  d1' <- STRef.write (x' + 1) d1
+                  bx1' <- STRef.write (toCharCode $ bs !!! (offset' + d1')) bx1
+                  d2' <- STRef.write (x' + 2) d2
+                  bx2' <- STRef.write (toCharCode $ bs !!! (offset' + d2')) bx2
+                  d3' <- STRef.write (x' + 3) d3
+                  bx3' <- STRef.write (toCharCode $ bs !!! (offset' + d3')) bx3
+                  x_ <- STRef.modify (_ + 4) x
+                  dd' <- STRef.write x_ dd
                   pure $ ST.for 0 ((la' * 2 - 1) `div` 2)
                     $ \i -> do
                         let
                           z = i * 2
                         z0 <- unsafePeek z v
-                        dy' <- STRef.modify (\_ -> z0) dy
+                        dy' <- STRef.write z0 dy
                         z1 <- unsafePeek (z + 1) v
-                        ay' <- STRef.modify (\_ -> z1) ay
+                        ay' <- STRef.write (z1) ay
                         d0'' <- STRef.modify (\d -> min' dy' d d1' bx0' ay') d0
                         d1'' <- STRef.modify (\d -> min' d0'' d d2' bx1' ay') d1
                         d2'' <- STRef.modify (\d -> min' d1'' d d3' bx2' ay') d2
                         dd'' <- STRef.modify (\d -> min' d2'' d dd' bx3' ay') dd
                         _ <- STArray.modify z (\_ -> dd'') v
-                        _ <- STRef.modify (\_ -> d2'') d3
-                        _ <- STRef.modify (\_ -> d1'') d2
-                        _ <- STRef.modify (\_ -> d0'') d1
-                        _ <- STRef.modify (\_ -> dy') d0
-                        _ <- STRef.modify (\_ -> dd'') lb
+                        _ <- STRef.write d2'' d3
+                        _ <- STRef.write d1'' d2
+                        _ <- STRef.write d0'' d1
+                        _ <- STRef.write dy' d0
+                        _ <- STRef.write dd'' lb
                         pure unit
             ST.while do
               x' <- STRef.read x
               pure $ x' < lb'
               $ do
                   x' <- STRef.read x
-                  d0' <- STRef.modify (\_ -> x') d0
-                  bx0' <- STRef.modify (\_ -> d0') bx0
+                  d0' <- STRef.write x' d0
+                  bx0' <- STRef.write d0' bx0
                   x'' <- STRef.modify (_ + 1) x
-                  dd' <- STRef.modify (\_ -> x'') dd
+                  dd' <- STRef.write x'' dd
                   pure $ ST.for 0 ((la' * 2 - 1) `div` 2)
                     $ \i -> do
                         let
                           z = i * 2
                         z0 <- unsafePeek z v
-                        dy' <- STRef.modify (\_ -> z0) dy
+                        dy' <- STRef.write z0 dy
                         z1 <- unsafePeek (z + 1) v
                         dd'' <- STRef.modify (\d -> min' dy' d0' d bx0' z1) dd
                         _ <- STArray.modify z (\_ -> dd'') v
-                        _ <- STRef.modify (\_ -> dy') d0
+                        _ <- STRef.write dy' d0
                         pure unit
             dd' <- STRef.read dd
-            _ <- STRef.modify (\_ -> dd') lb
+            _ <- STRef.write dd' lb
             pure unit
           STRef.read lb

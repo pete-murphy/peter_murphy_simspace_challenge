@@ -25,7 +25,7 @@ export const getOrdBreedFromQuery = (query: string): Ord<Breed> => {
   const l = levenshtein(query);
   return {
     equals: strictEqual,
-    compare: (x, y) => ordNumber.compare(l(y), l(x))
+    compare: (x, y) => ordNumber.compare(l(x), l(y))
   };
 };
 
