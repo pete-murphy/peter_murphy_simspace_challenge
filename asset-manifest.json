@@ -1,15 +1,21 @@
 {
   "files": {
-    "main.css": "/peter_murphy_simspace_challenge/static/css/main.0e9ef228.chunk.css",
-    "main.js": "/peter_murphy_simspace_challenge/static/js/main.098f8880.chunk.js",
-    "main.js.map": "/peter_murphy_simspace_challenge/static/js/main.098f8880.chunk.js.map",
-    "runtime~main.js": "/peter_murphy_simspace_challenge/static/js/runtime~main.d94be781.js",
-    "runtime~main.js.map": "/peter_murphy_simspace_challenge/static/js/runtime~main.d94be781.js.map",
-    "static/js/2.21f50a51.chunk.js": "/peter_murphy_simspace_challenge/static/js/2.21f50a51.chunk.js",
-    "static/js/2.21f50a51.chunk.js.map": "/peter_murphy_simspace_challenge/static/js/2.21f50a51.chunk.js.map",
+    "main.css": "/peter_murphy_simspace_challenge/static/css/main.171af51f.chunk.css",
+    "main.js": "/peter_murphy_simspace_challenge/static/js/main.b9586e4c.chunk.js",
+    "main.js.map": "/peter_murphy_simspace_challenge/static/js/main.b9586e4c.chunk.js.map",
+    "runtime-main.js": "/peter_murphy_simspace_challenge/static/js/runtime-main.f6e2cb3d.js",
+    "runtime-main.js.map": "/peter_murphy_simspace_challenge/static/js/runtime-main.f6e2cb3d.js.map",
+    "static/js/2.0f3d4f3f.chunk.js": "/peter_murphy_simspace_challenge/static/js/2.0f3d4f3f.chunk.js",
+    "static/js/2.0f3d4f3f.chunk.js.map": "/peter_murphy_simspace_challenge/static/js/2.0f3d4f3f.chunk.js.map",
     "index.html": "/peter_murphy_simspace_challenge/index.html",
-    "precache-manifest.5fd7039f32dfee3b63577004e0fdf3f9.js": "/peter_murphy_simspace_challenge/precache-manifest.5fd7039f32dfee3b63577004e0fdf3f9.js",
+    "precache-manifest.f800fbbfc7c7f0ccbecb0abb177cc3a0.js": "/peter_murphy_simspace_challenge/precache-manifest.f800fbbfc7c7f0ccbecb0abb177cc3a0.js",
     "service-worker.js": "/peter_murphy_simspace_challenge/service-worker.js",
-    "static/css/main.0e9ef228.chunk.css.map": "/peter_murphy_simspace_challenge/static/css/main.0e9ef228.chunk.css.map"
-  }
+    "static/css/main.171af51f.chunk.css.map": "/peter_murphy_simspace_challenge/static/css/main.171af51f.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f6e2cb3d.js",
+    "static/js/2.0f3d4f3f.chunk.js",
+    "static/css/main.171af51f.chunk.css",
+    "static/js/main.b9586e4c.chunk.js"
+  ]
 }
