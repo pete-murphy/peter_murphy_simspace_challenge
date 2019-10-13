@@ -5,7 +5,14 @@ You can edit this file as you like.
 { name =
     "my-project"
 , dependencies =
-    [ "effect", "console", "psci-support", "react-basic", "react-basic-hooks", "linear-algebra" ]
+    [ "effect"
+    , "console"
+    , "psci-support"
+    , "react-basic"
+    , "react-basic-hooks"
+    , "linear-algebra"
+    , "ohyes"
+    ]
 , packages =
     ./packages.dhall
 , sources =

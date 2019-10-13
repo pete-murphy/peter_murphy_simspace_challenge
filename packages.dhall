@@ -136,6 +136,39 @@ let additions =
       , version =
           "v0.5.0"
       }
+  , ohyes =
+      { dependencies =
+        [ "prelude"
+        , "console"
+        , "typelevel-prelude"
+        , "record"
+        , "generics-rep"
+        , "lists"
+        , "nullable"
+        , "variant"
+        , "foreign"
+        , "has-js-rep"
+        ]
+      , repo =
+          "https://github.com/justinwoo/purescript-ohyes.git"
+      , version =
+          "v2.1.0"
+      }
+  , has-js-rep =
+      { dependencies =
+        [ "prelude"
+        , "effect"
+        , "functions"
+        , "variant"
+        , "foreign-object"
+        , "nullable"
+        , "aff-promise"
+        ]
+      , repo =
+          "https://github.com/justinwoo/purescript-has-js-rep.git"
+      , version =
+          "v0.1.0"
+      }
   }
 
 in  upstream // overrides // additions
