@@ -22,7 +22,7 @@ const jaccard = (str0: string) => (str1: string): number => {
 };
 
 export const getOrdBreedFromQuery = (query: string): Ord<Breed> => {
-  const l = levenshtein(query);
+  const l = levenshtein(normalize(query));
   return {
     equals: strictEqual,
     compare: (x, y) => ordNumber.compare(l(y), l(x))

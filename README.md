@@ -2,7 +2,7 @@
 
 Deployed here: https://ptrfrncsmrph.github.io/peter_murphy_simspace_challenge/
 
-### Tools used (aside from TypeScript and React)
+## Tools used (aside from TypeScript and React)
 
 - **Sass:** Create React App ships with Sass support as of the 2.0 release, and I've found hot-reloading (without resetting app state) ideal for rapidly iterating on design. 
 
@@ -37,3 +37,24 @@ Deployed here: https://ptrfrncsmrph.github.io/peter_murphy_simspace_challenge/
 - **State management:** For simplicity I'm just using React's `useReducer` in a Redux-style but it would be nice to replace this with Redux to take advantage of its familiarity and existing tooling (browser DevTools, middleware).
 
 - **Pagination:** I misread part of the challenge specification 🙈 and was operating under the mistaken assumption that the requirement was to show the first 12 images only. If I were to do it again, I would add pagination to only load a page at a time, lazy-load on scroll.
+
+## Experiments
+
+### Adding PureScript
+
+Now there's a `purs` folder for PureScript modules, to be built with `spago build`. The PS `output` directory needs to be symlinked to `src/output` so it can be available in the React app.
+```bash
+$ ln -s $PWD/output $PWD/src
+```
+Right now there's an implementation of Levenshtein edit distance between strings in the `Distance` module.
+```haskell
+levenshtein :: String -> String -> Int
+```
+
+#### Todo
+- [ ] Add `purescript-ohyes` and interop with TS
+- [ ] Add `purescript-react-basic-hooks` components
+
+### ReasonReact
+
+I remember the TS interop was pretty seamless with Reason and `genType`.

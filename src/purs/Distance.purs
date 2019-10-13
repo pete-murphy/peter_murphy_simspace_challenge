@@ -1,13 +1,11 @@
 module Distance where
 
 import Prelude
-import Control.Monad.ST (ST)
-import Control.Monad.ST as ST
-import Control.Monad.ST.Ref as STRef
+import Control.Monad.ST (ST, run, for)
+import Control.Monad.ST.Ref (write, read, new)
 import Data.Array (reverse, sortBy, unsafeIndex)
 import Data.Array as Array
-import Data.Array.ST (STArray)
-import Data.Array.ST as STArray
+import Data.Array.ST (STArray, peek, push, empty, modify)
 import Data.Maybe (Maybe(..))
 import Data.String (length)
 import Data.String.CodeUnits (toCharArray)
@@ -29,10 +27,12 @@ infix 2 mapmapmap as <$$$>
 
 unsafePeek ::
   forall h a.
-  Int ->
   STArray h a ->
+  Int ->
   ST h a
-unsafePeek = (unsafePartial <<< case _ of Just x -> x) <$$$> STArray.peek
+unsafePeek = (unsafePartial <<< case _ of Just x -> x) <$$$> flip peek
+
+infixr 5 unsafePeek as !?!
 
 levenshtein ::
   String ->
@@ -46,30 +46,32 @@ levenshtein a b
   | a == b = 0
   | otherwise =
     unsafePartial
-      $ ST.run do
+      $ run do
           let
             [ as, bs ] = reverse $ toCharArray <$> sortBy (comparing length) [ a, b ]
-          row <- STArray.empty
-          prev <- STRef.new 0
-          val <- STRef.new 0
-          ST.for 0 (Array.length as + 1) $ \i -> STArray.push i row
-          ST.for 1 (Array.length bs + 1)
+
+            [ la, lb ] = Array.length <$> [ as, bs ]
+          row <- empty
+          prev <- new 0
+          val <- new 0
+          for 0 (la + 1) $ \i -> push i row
+          for 1 (lb + 1)
             $ \i -> do
-                _ <- STRef.write (i - 1) prev
+                _ <- write (i - 1) prev
                 _ <-
-                  ST.for 1 (Array.length as + 1) \j -> do
-                    prev' <- STRef.read prev
+                  for 1 (la + 1) \j -> do
+                    prev' <- read prev
                     _ <-
                       if (bs !!! i - 1 == as !!! j - 1) then do
-                        j1 <- unsafePeek (j - 1) row
-                        STRef.write j1 val
+                        j1 <- row !?! j - 1
+                        write j1 val
                       else do
-                        j1 <- unsafePeek (j - 1) row
-                        j2 <- unsafePeek j row
-                        STRef.write (min (j1 + 1) (min (prev' + 1) (j2 + 1))) val
-                    _ <- STArray.modify (j - 1) (\_ -> prev') row
-                    val' <- STRef.read val
-                    STRef.write val' prev
-                prev' <- STRef.read prev
-                STArray.modify (Array.length as) (\_ -> prev') row
-          unsafePeek (Array.length as) row
+                        j1 <- row !?! j - 1
+                        j2 <- row !?! j
+                        write (min (j1 + 1) (min (prev' + 1) (j2 + 1))) val
+                    _ <- modify (j - 1) (\_ -> prev') row
+                    val' <- read val
+                    write val' prev
+                prev' <- read prev
+                modify la (\_ -> prev') row
+          row !?! la
