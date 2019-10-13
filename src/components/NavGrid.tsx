@@ -56,9 +56,11 @@ const onSome = ({
         });
       };
 
-      const suggestion = closestMatchBreed(query)(breeds);
+      const optSuggestion = closestMatchBreed(query)(breeds);
 
-      const handleSuggestionClick: MouseEventHandler = (_e: MouseEvent) => {
+      const handleSuggestionClick = (suggestion: string) => (
+        _e: MouseEvent
+      ) => {
         dispatch(setQuery(""));
         dispatch(setSelectedBreed(some(suggestion)));
         fetchImages(suggestion).then((images: PendingImages) => {
@@ -72,13 +74,21 @@ const onSome = ({
           <p>
             No matches for <mark>{query}</mark>.
           </p>
-          <p>
-            Did you mean{" "}
-            <button className="suggestion" onClick={handleSuggestionClick}>
-              {suggestion}
-            </button>
-            ?
-          </p>
+          {foldOption(
+            () => null,
+            (suggestion: string) => (
+              <p>
+                Did you mean{" "}
+                <button
+                  className="suggestion"
+                  onClick={handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </button>
+                ?
+              </p>
+            )
+          )(optSuggestion)}
         </section>
       );
 
